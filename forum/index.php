@@ -1,72 +1,104 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Slike za preusmjeravanje</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-items: center;
-      height: 100vh;
-      background-color: #ffffff; /* Bijela pozadina */
+using System;
+
+class Program
+{
+    public class Computer
+    {
+        public string CPU { get; set; }
+        public string GPU { get; set; }
+        public int RAM { get; set; }
+
+        public void DisplayInfo()
+        {
+            Console.WriteLine($"Computer with CPU: {CPU}, GPU: {GPU}, RAM: {RAM}GB");
+        }
     }
 
-    h1, h2 {
-      margin-top: 20px;
-      text-align: center;
+    public interface IComputerBuilder
+    {
+        void SetCPU();
+        void SetGPU();
+        void SetRAM();
+        Computer GetComputer();
     }
 
-    .image-container {
-      text-align: center;
-      margin-top: 200px; /* Pomiče sliku na sredinu vertikalno */
+    public class GamingComputerBuilder : IComputerBuilder
+    {
+        private Computer computer = new Computer();
+
+        public void SetCPU()
+        {
+            computer.CPU = "High-end gaming CPU";
+        }
+
+        public void SetGPU()
+        {
+            computer.GPU = "Powerful gaming GPU";
+        }
+
+        public void SetRAM()
+        {
+            computer.RAM = 16;
+        }
+
+        public Computer GetComputer()
+        {
+            return computer;
+        }
     }
 
-    .image-container a {
-      display: inline-block;
-      position: relative;
-      overflow: hidden; /* Skriva sadržaj koji prelazi granice */
-      border-radius: 50%; /* Okrugli oblik za slike */
+    public class OfficeComputerBuilder : IComputerBuilder
+    {
+        private Computer computer = new Computer();
+
+        public void SetCPU()
+        {
+            computer.CPU = "Standard office CPU";
+        }
+
+        public void SetGPU()
+        {
+            computer.GPU = "Basic office GPU";
+        }
+
+        public void SetRAM()
+        {
+            computer.RAM = 8;
+        }
+
+        public Computer GetComputer()
+        {
+            return computer;
+        }
     }
 
-    .image-container img {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%; /* Okrugle slike */
-      margin: 20px;
-      cursor: pointer;
-      transition: transform 0.3s ease; /* Glatka tranzicija */
+    public class Director
+    {
+        public Computer BuildComputer(IComputerBuilder builder)
+        {
+            builder.SetCPU();
+            builder.SetGPU();
+            builder.SetRAM();
+            return builder.GetComputer();
+        }
     }
 
-    .image-container a::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.3); /* Siva transparentna pozadina */
-      border-radius: 50%; /* Okrugli oblik */
-      transition: opacity 0.3s ease; /* Glatka tranzicija */
-      opacity: 0; /* Skriva pozadinu inicijalno */
+    static void Main()
+    {
+        Director director = new Director();
+
+        IComputerBuilder gamingComputerBuilder = new GamingComputerBuilder();
+        Computer gamingComputer = director.BuildComputer(gamingComputerBuilder);
+
+        gamingComputer.DisplayInfo();
+
+        Console.WriteLine();
+
+        IComputerBuilder officeComputerBuilder = new OfficeComputerBuilder();
+        Computer officeComputer = director.BuildComputer(officeComputerBuilder);
+
+        officeComputer.DisplayInfo();
+
+        Console.ReadLine();
     }
-
-    .image-container a:hover::after {
-      opacity: 1; /* Prikazuje pozadinu kad je miš iznad slike */
-    }
-  </style>
-</head>
-<body>
-
-<h1>Odaberite jezik/Choose a language</h1>
-
-<div class="image-container">
-  <a href="indexhr.php"><img src="img/hr.png" alt="Slika 1"></a>
-  <a href="indexeng.php"><img src="img/eng.jpg" alt="Slika 2"></a>
-</div>
-
-</body>
-</html>
+}
